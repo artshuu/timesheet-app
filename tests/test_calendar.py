@@ -2,11 +2,7 @@
 import sys
 import os
 from datetime import date
-
-# Гарантированно добавляем src в путь прямо в файле теста
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
-
-from calendar_utils import get_month_work_days, is_weekend_or_holiday
+from src.calendar_utils import get_month_work_days, is_weekend_or_holiday
 
 
 def test_new_year_is_holiday():
