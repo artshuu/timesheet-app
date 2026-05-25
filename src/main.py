@@ -2,20 +2,19 @@
 import sys
 import os
 
-# КРИТИЧЕСКИ ВАЖНО ДЛЯ PYINSTALLER:
-# Добавляем путь к распакованным ресурсам _MEIPASS в sys.path
+# КРИТИЧЕСКИ ВАЖНО ДЛЯ PYINSTALLER
 if getattr(sys, 'frozen', False):
-    # Запущен как .exe
-    app_dir = os.path.dirname(sys.executable)
-    meipass = getattr(sys, '_MEIPASS', app_dir)
+    # Запущен как .exe — модули распакованы во временную папку _MEIPASS
+    meipass = getattr(sys, '_MEIPASS', os.path.dirname(sys.executable))
     if meipass not in sys.path:
         sys.path.insert(0, meipass)
 else:
-    # Режим разработки
+    # Режим разработки — добавляем папку src/
     src_dir = os.path.dirname(os.path.abspath(__file__))
     if src_dir not in sys.path:
         sys.path.insert(0, src_dir)
 
+# Импорты ПОСЛЕ настройки sys.path
 from PyQt6.QtWidgets import QApplication
 from db import init_db
 from gui import TimesheetApp
