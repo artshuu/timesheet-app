@@ -61,6 +61,7 @@ jobs:
             --name "TimesheetTechDept" `
             --windowed `
             --onefile `
+            --paths src `
             --collect-all PyQt6 `
             --hidden-import "holidays.countries.russia" `
             --hidden-import "openpyxl" `
