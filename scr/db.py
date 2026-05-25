@@ -1,13 +1,14 @@
-# db.py
+# src/db.py
 import sqlite3
 import os
+import sys
 from typing import List, Dict, Optional
 from contextlib import contextmanager
 
 DB_NAME = "timesheet.db"
 
-import sys
 def get_db_path():
+    """Учет пути при сборке в .exe (PyInstaller)"""
     if getattr(sys, 'frozen', False):
         # Запущен как .exe — БД рядом с исполняемым файлом
         return os.path.join(os.path.dirname(sys.executable), DB_NAME)
@@ -55,7 +56,6 @@ def init_db():
                 value TEXT
             );
         """)
-        # Дефолтные настройки
         defaults = {
             "institution": "ФГБОУ ВО «Технический Университет»",
             "department": "Технический отдел",
@@ -86,23 +86,6 @@ def delete_employee(emp_id: int):
         conn.execute("DELETE FROM employees WHERE id=?", (emp_id,))
 
 def save_month_data(year: int, month: int, data: List[Dict]):
-    """data = [{'emp_id': 1, 'day': 1, 'code': 'Ф/Я', 'hours': 8.0}, ...]"""
     with get_connection() as conn:
         conn.executemany("""
-            INSERT OR REPLACE INTO timesheet (employee_id, year, month, day, code, hours)
-            VALUES (:emp_id, :year, :month, :day, :code, :hours)
-        """, data)
-
-def load_month_data(year: int, month: int) -> List[Dict]:
-    with get_connection() as conn:
-        cur = conn.execute("""
-            SELECT employee_id, day, code, hours FROM timesheet 
-            WHERE year=? AND month=?
-        """, (year, month))
-        return [dict(r) for r in cur.fetchall()]
-
-def get_setting(key: str) -> str:
-    with get_connection() as conn:
-        cur = conn.execute("SELECT value FROM settings WHERE key=?", (key,))
-        row = cur.fetchone()
-        return row['value'] if row else ""
+            INSERT OR REPLACE INTO timesheet (employee_id, year,
