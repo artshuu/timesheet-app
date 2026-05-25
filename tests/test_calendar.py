@@ -1,6 +1,3 @@
-# tests/test_calendar.py
-import sys
-import os
 from datetime import date
 from src.calendar_utils import get_month_work_days, is_weekend_or_holiday
 
