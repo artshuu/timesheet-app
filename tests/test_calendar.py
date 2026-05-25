@@ -1,5 +1,5 @@
 from datetime import date
-from src.calendar_utils import get_month_work_days, is_weekend_or_holiday
+from calendar_utils import get_month_work_days, is_weekend_or_holiday
 
 def test_new_year_is_holiday():
     """1 января — всегда выходной"""
