@@ -6,10 +6,12 @@ from contextlib import contextmanager
 
 DB_NAME = "timesheet.db"
 
+import sys
 def get_db_path():
-    """Учет пути при сборке в .exe (PyInstaller)"""
-    if hasattr(os, 'sys') and getattr(os, '_MEIPASS', False):
-        return os.path.join(os._MEIPASS, DB_NAME)
+    if getattr(sys, 'frozen', False):
+        # Запущен как .exe — БД рядом с исполняемым файлом
+        return os.path.join(os.path.dirname(sys.executable), DB_NAME)
+    # Режим разработки
     return os.path.join(os.path.dirname(os.path.abspath(__file__)), DB_NAME)
 
 @contextmanager
