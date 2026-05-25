@@ -1,7 +1,7 @@
 import os
 import tempfile
 import pytest
-from src import db
+import db
 
 
 @pytest.fixture(autouse=True)
