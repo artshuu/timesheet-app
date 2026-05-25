@@ -1,6 +1,6 @@
 import os, tempfile
 import pytest
-import db
+from src import db
 
 @pytest.fixture(autouse=True)
 def temp_db(monkeypatch):
