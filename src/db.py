@@ -86,6 +86,11 @@ def delete_employee(emp_id: int):
         conn.execute("DELETE FROM employees WHERE id=?", (emp_id,))
 
 def save_month_data(year: int, month: int, data: List[Dict]):
+    """Сохранение данных табеля за месяц"""
     with get_connection() as conn:
-        conn.executemany("""
-            INSERT OR REPLACE INTO timesheet (employee_id, year,
+        conn.executemany(
+            "INSERT OR REPLACE INTO timesheet "
+            "(employee_id, year, month, day, code, hours) "
+            "VALUES (:emp_id, :year, :month, :day, :code, :hours)",
+            data
+        )
