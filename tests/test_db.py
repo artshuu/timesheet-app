@@ -1,18 +1,11 @@
-# tests/test_db.py
 import os
-import sys
 import tempfile
 import pytest
-
-# Гарантированно добавляем src в путь прямо в файле теста
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
-
-import db
+from src import db
 
 
 @pytest.fixture(autouse=True)
 def temp_db(monkeypatch):
-    """Используем временную БД для тестов"""
     fd, path = tempfile.mkstemp(suffix='.db')
     os.close(fd)
     monkeypatch.setattr(db, 'DB_NAME', path)
