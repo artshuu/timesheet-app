@@ -1,0 +1,52 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: 🚀 Publish Release
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install deps
+        run: |
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Extract version
+        id: version
+        shell: bash
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Build release EXE
+        run: |
+          pyinstaller --noconfirm --clean `
+            --name "TimesheetTechDept-v${{ steps.version.outputs.VERSION }}" `
+            --windowed --onefile `
+            --hidden-import "holidays.countries.russia" `
+            --hidden-import "openpyxl" `
+            src/main.py
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "Timesheet Tech Dept v${{ steps.version.outputs.VERSION }}"
+          generate_release_notes: true
+          draft: false
+          files: |
+            dist/TimesheetTechDept-v${{ steps.version.outputs.VERSION }}.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
